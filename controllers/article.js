@@ -14,6 +14,25 @@ const getAllArticles = async (req, res) => {
     });
 };
 
+const getAllArticleBySlug = async (req, res) => {
+    const { slug } = req.params;
+
+    try {
+        const article = await Article.findOne({
+            where: { slug }
+        });
+
+        if (!article) {
+            return res.status(404).json({ message: 'Article not found' });
+        }
+
+        return res.status(200).json(article);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+};
+
 module.exports = {
-    getAllArticles
+    getAllArticles,
+    getAllArticleBySlug
 };
