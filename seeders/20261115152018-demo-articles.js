@@ -20,7 +20,7 @@ module.exports = {
         image: 'morning.jpg',
         body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         published: new Date(),
-        author_id: 1,
+        author_id: 3,
         createdAt: new Date(),
         updatedAt: new Date()
       },

@@ -7,6 +7,12 @@ module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     static associate(models) {
       // define association here
+      this.belongsTo(models.Author, {
+        foreignKey: {
+          name: 'AuthorId',
+          field: 'author_id'
+        },
+      });
     }
   }
 
