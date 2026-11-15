@@ -4,6 +4,32 @@ const sequelize = new Sequelize('mysql://root:qwerty@localhost:3306/joga_sequeli
 const db = require('../models');
 const { Article, Author, Tag, ArticleTags } = db;
 
+const createArticle = async (req, res) => {
+  try {
+    const { name, slug, image, body, published, author_id } = req.body;
+
+    if (!name || !slug || !image || !body || !author_id) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const article = await Article.create({
+      name,
+      slug,
+      image,
+      body,
+      published: published || new Date(),
+      author_id
+    });
+
+    return res.status(201).json({
+      message: 'New article created',
+      article
+    });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+
 const getAllArticles = async (req, res) => {
     try {
         const articles = await Article.findAll({
@@ -50,6 +76,7 @@ const getAllArticleBySlug = async (req, res) => {
 };
 
 module.exports = {
+    createArticle,
     getAllArticles,
     getAllArticleBySlug
 };
