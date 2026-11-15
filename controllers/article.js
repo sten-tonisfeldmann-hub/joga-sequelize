@@ -1,18 +1,20 @@
 const Sequelize = require('sequelize'); 
 const sequelize = new Sequelize('mysql://root:qwerty@localhost:3306/joga_sequelize');
 
-const Article = require('../models/article')(sequelize, Sequelize.DataTypes);
-const Author = require('../models/author')(sequelize, Sequelize.DataTypes);
-
-Article.belongsTo(Author, { foreignKey: 'author_id', as: 'author' });
+const db = require('../models');
+const { Article, Author, Tag, ArticleTags } = db;
 
 const getAllArticles = async (req, res) => {
     try {
         const articles = await Article.findAll({
-            include: [{
-                model: Author,
-                as: 'author'
-            }]
+            include: [
+                { model: Author, as: 'author' },
+                {
+                    model: Tag,
+                    as: 'tags',
+                    through: { model: ArticleTags, attributes: [] }
+                }
+            ]
         });
 
         return res.status(200).json(articles);
@@ -27,10 +29,14 @@ const getAllArticleBySlug = async (req, res) => {
     try {
         const article = await Article.findOne({
             where: { slug },
-            include: [{
-                model: Author,
-                as: 'author'
-            }]
+            include: [
+                { model: Author, as: 'author' },
+                {
+                    model: Tag,
+                    as: 'tags',
+                    through: { model: ArticleTags, attributes: [] }
+                }
+            ]
         });
 
         if (!article) {
