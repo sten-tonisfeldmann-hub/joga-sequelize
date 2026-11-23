@@ -4,6 +4,7 @@ const ArticleRepository = require('./repositories/ArticleRepository');
 const ArticleService = require('./services/ArticleService');
 const ArticleController = require('./controllers/ArticleController');
 const ArticleRouter = require('./routes/ArticleRouter');
+const ErrorHandler = require('./middleware/errorHandler');
 
 class Application {
     constructor(database) {
@@ -31,9 +32,11 @@ class Application {
             res.status(200).json({ message: 'Welcome to sequelize application' });
         });
 
-        this.app.use((error, req, res, next) => {
-            res.status(500).json({ message: error.message });
+        this.app.use((req, res) => {
+            res.status(404).json({ message: 'Route not found' });
         });
+
+        this.app.use(ErrorHandler.handle);
     }
 
     getApp() {
