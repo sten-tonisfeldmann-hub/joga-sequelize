@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const ArticleRepository = require('./repositories/ArticleRepository');
 const ArticleService = require('./services/ArticleService');
@@ -20,12 +21,21 @@ class Application {
     }
 
     configureMiddleware() {
+        this.app.use(cors({
+            methods: ['GET', 'POST', 'DELETE', 'PUT'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+            credentials: true
+        }));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
     }
 
     configureRoutes() {
-        const articleRepository = new ArticleRepository(this.database.Article, this.database.Author);
+        const articleRepository = new ArticleRepository(
+            this.database.Article,
+            this.database.Author,
+            this.database.Tag
+        );
         const articleService = new ArticleService(articleRepository);
         const articleController = new ArticleController(articleService);
         const articleRouter = new ArticleRouter(articleController);
