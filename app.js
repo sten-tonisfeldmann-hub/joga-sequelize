@@ -21,7 +21,7 @@ class Application {
     }
 
     configureRoutes() {
-        const articleRepository = new ArticleRepository(this.database.Article);
+        const articleRepository = new ArticleRepository(this.database.Article, this.database.Author);
         const articleService = new ArticleService(articleRepository);
         const articleController = new ArticleController(articleService);
         const articleRouter = new ArticleRouter(articleController);
