@@ -1,27 +1,26 @@
-const express = require('express');
-const app = express();
+// Importing necessary modules
+import express from 'express'; // Express framework for building the server
+import dotenv from 'dotenv'; // dotenv for loading environment variables from .env file
+import cors from 'cors'; // CORS middleware for handling Cross-Origin Resource Sharing
+import colors from 'colors'; // colors for adding color to console logs
+import morgan from 'morgan'; // morgan for logging HTTP requests
+import connection from './db.js'; // Importing the database connection function
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('mysql://root:qwerty@localhost:3306/joga_sequelize');
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connected to the database.');
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
-  });
-
-const articleRouter = require('./routes/article');
-const adminArticleRouter = require('./routes/admin/article');
-
-app.use('/articles', articleRouter);
-app.use('/admin/articles', adminArticleRouter);
-
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+// Load environment variables from .env file
+dotenv.config();
+const app = express(); // Initialize express application
+// CORS configuration
+app.use(cors({
+    methods: ['GET', 'POST', 'DELETE', 'PUT'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+    credentials: true, // Enable passing cookies across origins
+}));
+app.use(express.json()); // Middleware to parse JSON requests
+app.use(morgan('dev')); // HTTP request logger
+const PORT = process.env.PORT || 5000; // Set the port from environment variables or default to 5000
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`.green.bold); // Log that the server is running
 });
+// Connect to the database
+connection();
