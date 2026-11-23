@@ -4,6 +4,10 @@ const ArticleRepository = require('./repositories/ArticleRepository');
 const ArticleService = require('./services/ArticleService');
 const ArticleController = require('./controllers/ArticleController');
 const ArticleRouter = require('./routes/ArticleRouter');
+const AuthorRepository = require('./repositories/AuthorRepository');
+const AuthorService = require('./services/AuthorService');
+const AuthorController = require('./controllers/AuthorController');
+const AuthorRouter = require('./routes/AuthorRouter');
 const ErrorHandler = require('./middleware/errorHandler');
 
 class Application {
@@ -26,7 +30,13 @@ class Application {
         const articleController = new ArticleController(articleService);
         const articleRouter = new ArticleRouter(articleController);
 
+        const authorRepository = new AuthorRepository(this.database.Author);
+        const authorService = new AuthorService(authorRepository);
+        const authorController = new AuthorController(authorService);
+        const authorRouter = new AuthorRouter(authorController);
+
         this.app.use('/api/articles', articleRouter.getRouter());
+        this.app.use('/api/authors', authorRouter.getRouter());
 
         this.app.get('/', (req, res) => {
             res.status(200).json({ message: 'Welcome to sequelize application' });
